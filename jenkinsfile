@@ -1,0 +1,20 @@
+pipeline {
+    agent { label 'master' }
+    stages {
+        stage ('cloning git repo') {
+            steps {
+                git 'https://github.com/vishal225069/maven-helloworld.git'
+            }
+        }
+        stage ('mvn build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+         stage ('deploy to tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat_jenkins', path: '', url: 'http://34.131.140.134:8090')], contextPath: 'pipeline', war: '**/*.war'
+            }
+        }
+    }
+}
